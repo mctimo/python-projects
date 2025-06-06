@@ -10,7 +10,6 @@ def print_row(x: [[str]] ):
     print('____')
 
 
-
 def is_full(x: [[str]] )-> bool:
     for i in x:
         for j in i:
@@ -26,8 +25,9 @@ def is_winner(x: [[str]]) -> bool:
     for i in range(len(x)):
         if x[0][i] != '_' and x[0][i] == x[1][i] == x[2][i]:
             return x[0][i]
-    if x[0][0] != '_' and x[0][0] == x[1][1] == x[2][2] or x[0][2] == x[1][1] == x[2][0]:
+    if (x[0][0] != '_' and x[0][0] == x[1][1] == x[2][2]) or (x[0][2] != '_' and x[0][2] == x[1][1] == x[2][0]):
         return x[0][0]
+    return False
 
 def copy_table(x: list[list[str]]) -> list[list[str]]:
     result = [['','',''],
@@ -48,8 +48,12 @@ def set_user_value(x: list[list[str]], number: int, value: str) -> list[list[str
 
     row = number // 3
     colum = number % 3
-    x[row][colum] = value
-    return x
+    if x[row][colum] == '_':
+        x[row][colum] = value
+        return x
+    else:
+        print('Value already busy')
+        return
 
 def next_step(x: list[list[str]], who_next: str) -> list:
     next_steps_list = []
@@ -66,34 +70,23 @@ def print_next_steps_list(l: list):
         print_row(i)
 
 
+def start_game(x: [[str]] ) -> str or None:
+    print("Hello!")
+    user_input = input("Start Game?\n")
+    who_next = 'x'
+    if user_input == "yes" or "YES" or "Yes":
+        while not is_winner(x):
+            print_row(x)
+            if who_next == 'x':
+                x_input = input("Input cross position:\n")
+                set_user_value(x, int(x_input), 'x')
+                who_next = 'y'
+            else:
+                zero_input = input("Input zero position\n")
+                set_user_value(x, int(zero_input), '0')
+                who_next = 'x'
+        print(f"{is_winner(x)} is WINNER!")
+    else:
+        print("OK! Good buy")
 
-
-set_user_value(x, 0, "0")
-set_user_value(x, 3, "x")
-set_user_value(x, 1, "0")
-set_user_value(x, 7, "0")
-l = next_step(x, who_next='x')
-print_next_steps_list(l)
-
-
-# Сделать интерфейс 
-# Выводиться пустая доска
-# Запраши
-
-
-___
-___
-___
-1
-_x_
-___
-___
-3
-_x_
-0__
-___
-5
-_x_
-0_x
-___
-...
+start_game(x)
