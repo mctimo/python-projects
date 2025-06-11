@@ -2,6 +2,10 @@ x = [['_', '_', '_'],
      ['_', '_','_'],
      ['_', '_', '_']]
 
+x2 = [['x', '0', 'x'],
+     ['0', '0','x'],
+     ['_', '_', '_']]
+
 def print_row(x: [[str]] ):
     for i in x:
         for j in i:
@@ -65,6 +69,24 @@ def next_step(x: list[list[str]], who_next: str) -> list:
                 next_steps_list.append(result)
     return next_steps_list
 
+def changer(who_next: str) -> str:
+    if who_next == 'x':
+        return '0'
+    else:
+        return 'x'
+
+def count_steps(x: list, who_next: str) -> int:
+    if not is_winner(x):
+        next_steps_list = next_step(x, who_next)
+        if len(next_steps_list) > 0:
+            counter = 1
+            for i in next_steps_list:
+                counter += count_steps(i, changer(who_next))
+            return counter
+        return 1
+    else:
+        return 1
+
 def print_next_steps_list(l: list):
     for i in l:
         print_row(i)
@@ -89,4 +111,7 @@ def start_game(x: [[str]] ) -> str or None:
     else:
         print("OK! Good buy")
 
-start_game(x)
+#start_game(x)
+print(count_steps(x2, 'x'))
+# алгоритм минимакс 
+# библиотека tkinter
