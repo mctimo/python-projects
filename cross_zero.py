@@ -1,10 +1,14 @@
-x = [['_', '_', '_'],
-     ['_', '_','_'],
-     ['_', '_', '_']]
+# x = [['_', '_', '_'],
+#      ['_', '_','_'],
+#      ['_', '_', '_']]
 
 x2 = [['x', '0', 'x'],
      ['0', '0','x'],
      ['_', '_', '_']]
+
+# x3 = [['x', '0', 'x'],
+#      ['0', '0','x'],
+#      ['x', '_', '_']]
 
 def print_row(x: [[str]] ):
     for i in x:
@@ -31,7 +35,7 @@ def is_winner(x: [[str]]) -> bool:
             return x[0][i]
     if (x[0][0] != '_' and x[0][0] == x[1][1] == x[2][2]) or (x[0][2] != '_' and x[0][2] == x[1][1] == x[2][0]):
         return x[0][0]
-    return False
+    return None
 
 def copy_table(x: list[list[str]]) -> list[list[str]]:
     result = [['','',''],
@@ -57,25 +61,25 @@ def set_user_value(x: list[list[str]], number: int, value: str) -> list[list[str
         return x
     else:
         print('Value already busy')
-        return
+        return x
 
-def next_step(x: list[list[str]], who_next: str) -> list:
+def next_step(x: list[list[str]], current_player: str) -> list:
     next_steps_list = []
     for i in range(len(x)):
         for j in range (len(x[i])):
             if x[i][j] == '_':
                 result = copy_table(x)
-                result[i][j] = who_next
+                result[i][j] = current_player
                 next_steps_list.append(result)
     return next_steps_list
 
-def changer(who_next: str) -> str:
-    if who_next == 'x':
+def changer(current_player: str) -> str:
+    if current_player == 'x':
         return '0'
     else:
         return 'x'
 
-def count_steps(x: list, who_next: str) -> int:
+def count_steps(x: list, current_player: str) -> int:
     if not is_winner(x):
         next_steps_list = next_step(x, who_next)
         if len(next_steps_list) > 0:
@@ -87,31 +91,71 @@ def count_steps(x: list, who_next: str) -> int:
     else:
         return 1
 
+# 0 is AI
+# X is player
+def value(x: list, current_player: str) -> int:
+    winner = is_winner(x)
+
+    if winner == '0':
+        return 1
+    elif winner == 'x':
+        return -1
+    elif is_full(x):
+        return 0
+
+    result = []
+    list_of_steps = next_step(x ,current_player=current_player)
+    for i in list_of_steps:
+        result.append(value(i,current_player=changer(current_player)))
+
+    if current_player == '0':
+        return max(result)
+    else:
+        return min(result)
+
+def best_step(x: [[str]]) -> [[str]]:
+    values = []
+    steps = []
+    next_steps = next_step(x,current_player='0')
+    for i in next_steps:
+        steps.append(i)
+        values.append(value(i,current_player='x'))
+
+    return steps[values.index(max(values))]
+
+# нахожу разницу в досках
+def best_step_value(old_board: [[str]], new_board: [[str]]) -> int:
+
+    for i in range(3):
+        for j in range(3):
+            if old_board[i][j] != new_board[i][j]:
+                return i*3 +j
+
 def print_next_steps_list(l: list):
     for i in l:
         print_row(i)
 
 
 def start_game(x: [[str]] ) -> str or None:
-    print("Hello!")
-    user_input = input("Start Game?\n")
-    who_next = 'x'
-    if user_input == "yes" or "YES" or "Yes":
-        while not is_winner(x):
-            print_row(x)
-            if who_next == 'x':
-                x_input = input("Input cross position:\n")
-                set_user_value(x, int(x_input), 'x')
-                who_next = 'y'
-            else:
-                zero_input = input("Input zero position\n")
-                set_user_value(x, int(zero_input), '0')
-                who_next = 'x'
-        print(f"{is_winner(x)} is WINNER!")
-    else:
-        print("OK! Good buy")
+    current_player = 'x'
+    while not is_winner(x) and not is_full(x):
+        print_row(x)
+        if current_player == 'x':
+            x_input = input("Input cross position:\n")
+            set_user_value(x, int(x_input)-1, 'x')
+            current_player = '0'
+        else:
+            step = best_step(x)
+            number_of_positon = best_step_value(x, step)
+            set_user_value(x, number_of_positon,'0')
+            current_player = 'x'
+    print_row(x)
+    print(f"{is_winner(x)} is WINNER!")
 
-#start_game(x)
-print(count_steps(x2, 'x'))
-# алгоритм минимакс 
-# библиотека tkinter
+
+start_game(x2)
+# print(count_steps(x2, 'x'))
+# for i in best_step(x2):
+#     print(i, end='\n')
+
+# библиотека tkinter сделать интерфейс 
