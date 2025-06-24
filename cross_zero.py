@@ -1,14 +1,3 @@
-# x = [['_', '_', '_'],
-#      ['_', '_','_'],
-#      ['_', '_', '_']]
-
-x2 = [['x', '0', 'x'],
-     ['0', '0','x'],
-     ['_', '_', '_']]
-
-# x3 = [['x', '0', 'x'],
-#      ['0', '0','x'],
-#      ['x', '_', '_']]
 
 def print_row(x: [[str]] ):
     for i in x:
@@ -151,11 +140,3 @@ def start_game(x: [[str]] ) -> str or None:
             current_player = 'x'
     print_row(x)
     print(f"{is_winner(x)} is WINNER!")
-
-
-start_game(x2)
-# print(count_steps(x2, 'x'))
-# for i in best_step(x2):
-#     print(i, end='\n')
-
-# библиотека tkinter сделать интерфейс 

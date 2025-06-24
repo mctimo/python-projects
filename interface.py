@@ -55,9 +55,4 @@ for i in range(9):
     btn.grid(row=row, column=col, padx=5, pady=5)
     buttons.append(btn)
 
-
-
-       
-
-
 root.mainloop()
