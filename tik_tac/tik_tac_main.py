@@ -30,6 +30,7 @@ def is_winner(x: [[str]]) -> bool:
         return x[0][2]
     return None
 
+
 def copy_table(x: list[list[str]]) -> list[list[str]]:
     result = [['','',''],
               ['','',''],
@@ -57,6 +58,7 @@ def set_user_value(x: list[list[str]], number: int, value: str) -> list[list[str
         print('Value already busy')
         return x
 
+
 def next_step(x: list[list[str]], current_player: str) -> list:
     next_steps_list = []
     for i in range(len(x)):
@@ -67,19 +69,21 @@ def next_step(x: list[list[str]], current_player: str) -> list:
                 next_steps_list.append(result)
     return next_steps_list
 
+
 def changer(current_player: str) -> str:
     if current_player == 'x':
         return '0'
     else:
         return 'x'
 
+
 def count_steps(x: list, current_player: str) -> int:
     if not is_winner(x):
-        next_steps_list = next_step(x, who_next)
+        next_steps_list = next_step(x, current_player)
         if len(next_steps_list) > 0:
             counter = 1
             for i in next_steps_list:
-                counter += count_steps(i, changer(who_next))
+                counter += count_steps(i, changer(current_player))
             return counter
         return 1
     else:
@@ -87,6 +91,8 @@ def count_steps(x: list, current_player: str) -> int:
 
 # 0 is AI
 # X is player
+
+
 def value(x: list, current_player: str) -> int:
     winner = is_winner(x)
 
@@ -107,6 +113,7 @@ def value(x: list, current_player: str) -> int:
     else:
         return min(result)
 
+
 def best_step(x: [[str]]) -> [[str]]:
     values = []
     steps = []
@@ -117,6 +124,7 @@ def best_step(x: [[str]]) -> [[str]]:
 
     return steps[values.index(max(values))]
 
+
 # нахожу разницу в досках
 def best_step_value(old_board: [[str]], new_board: [[str]]) -> int:
 
@@ -124,6 +132,7 @@ def best_step_value(old_board: [[str]], new_board: [[str]]) -> int:
         for j in range(3):
             if old_board[i][j] != new_board[i][j]:
                 return i*3 +j
+
 
 def print_next_steps_list(l: list):
     for i in l:

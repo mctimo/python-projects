@@ -26,7 +26,6 @@ buttons = []
 
 def click_button(index, board=board):
 
-
     if board[index // 3][index % 3] != '_':
         messagebox.showinfo("Клетка занята!")
         return  # 🔒 клетка уже занята
@@ -48,7 +47,6 @@ def click_button(index, board=board):
     best_step_index = best_step_value(board, best_step_board)
     set_user_value(x=board, number=best_step_index, value='0')
     buttons[best_step_index]["text"] = "0"
-
 
     if is_winner(board) or is_full(board):
         messagebox.showinfo("Игра окончена", "Победил: 0")
