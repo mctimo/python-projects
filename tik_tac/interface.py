@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
-from cross_zero import *
- 
+from tik_tac_main import *
+
 root = Tk()     # создаем корневой объект - окно
 root.title("Tik Tac Game")     # устанавливаем заголовок окна
 root.geometry("300x250")    # устанавливаем размеры окна
@@ -17,12 +17,15 @@ board = [['_', '_', '_'],
          ['_', '_', '_'],
          ['_', '_', '_']]
 
+board2 = [['0', '_', 'x'],
+         ['_', 'x', '_'],
+         ['x', '_', 'x']]
+
 buttons = []
 
 
-def click_button(index ,board=board):
-    if is_full(board) or is_winner(board):
-        return
+def click_button(index, board=board):
+
 
     if board[index // 3][index % 3] != '_':
         messagebox.showinfo("Клетка занята!")
@@ -32,10 +35,14 @@ def click_button(index ,board=board):
     set_user_value(x=board, number=index, value='x')
     buttons[index]["text"] = "X"
 
-    if is_winner(board) or is_full(board):
+    if is_winner(board):
         messagebox.showinfo("Игра окончена", "Победил: X")
         return
-    
+
+    if is_full(board):
+        messagebox.showinfo("Игра окончена","Ничья!")
+        return
+
     # ходит ии
     best_step_board = best_step(board)
     best_step_index = best_step_value(board, best_step_board)
@@ -46,6 +53,10 @@ def click_button(index ,board=board):
     if is_winner(board) or is_full(board):
         messagebox.showinfo("Игра окончена", "Победил: 0")
         return
+
+    if is_full(board):
+        messagebox.showinfo("Игра окончена","Ничья!")
+        return
     
 
 for i in range(9):
@@ -55,4 +66,5 @@ for i in range(9):
     btn.grid(row=row, column=col, padx=5, pady=5)
     buttons.append(btn)
 
+# print(is_winner(board2))
 root.mainloop()

@@ -1,3 +1,5 @@
+from tkinter import messagebox
+
 
 def print_row(x: [[str]] ):
     for i in x:
@@ -22,8 +24,10 @@ def is_winner(x: [[str]]) -> bool:
     for i in range(len(x)):
         if x[0][i] != '_' and x[0][i] == x[1][i] == x[2][i]:
             return x[0][i]
-    if (x[0][0] != '_' and x[0][0] == x[1][1] == x[2][2]) or (x[0][2] != '_' and x[0][2] == x[1][1] == x[2][0]):
+    if (x[0][0] != '_' and x[0][0] == x[1][1] == x[2][2]):
         return x[0][0]
+    if (x[0][2] != '_' and x[0][2] == x[1][1] == x[2][0]):
+        return x[0][2]
     return None
 
 def copy_table(x: list[list[str]]) -> list[list[str]]:
@@ -34,6 +38,7 @@ def copy_table(x: list[list[str]]) -> list[list[str]]:
         for j in range(len(x[i])):
             result[i][j] = x[i][j]
     return result
+
 
 def set_user_value(x: list[list[str]], number: int, value: str) -> list[list[str]] or None:
     if not (0 <= number <= 9):
@@ -140,3 +145,4 @@ def start_game(x: [[str]] ) -> str or None:
             current_player = 'x'
     print_row(x)
     print(f"{is_winner(x)} is WINNER!")
+
