@@ -1,5 +1,4 @@
 from tkinter import *
-from tkinter import messagebox
 from tik_tac_main import *
 
 root = Tk()     # создаем корневой объект - окно
