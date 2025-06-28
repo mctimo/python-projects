@@ -9,7 +9,7 @@ try:
     snake_x = 0
     snake = '>'
     view.addstr(0, 0, snake)
-    apple_x,apple_y = randint(0,10), randint(0,10)
+    apple_x, apple_y = randint(0,10), randint(0,10)
     view.addstr(apple_x, apple_y, '$')
     snake_tail = []
     while True:
@@ -21,15 +21,20 @@ try:
         if input == 97:
             snake_x -= 1
         if input == 100:
-            snake_x +=1
-        if (snake_y, snake_x) == (view_y , view_x):
+            snake_x += 1
+        if snake_y == view_y or snake_x == view_x:
+            print("Game Over!")
+            exit()
+        if snake_y == -1 or snake_x == -1:
+            print("Game Over!")
             exit()
         if (snake_y, snake_x) in snake_tail:
+            print("Game Over!")
             exit()
         snake_tail.append((snake_y, snake_x))
         view.erase()
         for i in snake_tail:
-            view.addstr(i[0],i[1],snake)
+            view.addstr(i[0], i[1], snake)
         if (apple_y, apple_x) == (snake_y, snake_x):
             apple_y,apple_x = randint(0,10), randint(0,10)
         else:
@@ -38,6 +43,5 @@ try:
 finally:
     endwin()
 
-
-# сделать выход за границы ошибка в 26 строке и добавить обработку 0-0 (слева и сверху)
-# сделать ui в tkinter
+# сделать выход за границы ошибка в 26 строке и добавить обработку 0-0 (слева и сверху) - done
+# сделать ui в tkinter - in progress
