@@ -1,47 +1,101 @@
-from curses import *
 from random import randint
+from tkinter import *
 
-view = initscr()
+# CONST
+WINDOW_X = 500
+WINDOW_Y = 500
+BACKGROUND_COLOR = 'black'
+SPACE_SIZE = 25
 
-try:
-    view_y, view_x = view.getmaxyx()
-    snake_y = 0
-    snake_x = 0
-    snake = '>'
-    view.addstr(0, 0, snake)
-    apple_x, apple_y = randint(0,10), randint(0,10)
-    view.addstr(apple_x, apple_y, '$')
+# main logic
+direction = "right" # дефолтное направление змейки
+
+
+def change_direction(event):
+    global direction
+    key = event.keysym.lower()  # чтобы работало и с заглавными, и с маленькими
+
+    if key in ["up", "w"] and direction != "down":
+        direction = "up"
+    elif key in ["down", "s"] and direction != "up":
+        direction = "down"
+    elif key in ["left", "a"] and direction != "right":
+        direction = "left"
+    elif key in ["right", "d"] and direction != "left":
+        direction = "right"
+
+
+def start_game():
+    global snake_x, snake_y, apple_x, apple_y, snake_tail, score
+    snake_x, snake_y = 0, 0
+    apple_x = randint(0, (WINDOW_X - SPACE_SIZE) // SPACE_SIZE) * SPACE_SIZE
+    apple_y = randint(0, (WINDOW_Y - SPACE_SIZE) // SPACE_SIZE) * SPACE_SIZE
     snake_tail = []
-    while True:
-        input = view.getch()
-        if input == 119:
-            snake_y -= 1
-        if input == 115:
-            snake_y += 1
-        if input == 97:
-            snake_x -= 1
-        if input == 100:
-            snake_x += 1
-        if snake_y == view_y or snake_x == view_x:
-            print("Game Over!")
-            exit()
-        if snake_y == -1 or snake_x == -1:
-            print("Game Over!")
-            exit()
-        if (snake_y, snake_x) in snake_tail:
-            print("Game Over!")
-            exit()
-        snake_tail.append((snake_y, snake_x))
-        view.erase()
-        for i in snake_tail:
-            view.addstr(i[0], i[1], snake)
-        if (apple_y, apple_x) == (snake_y, snake_x):
-            apple_y,apple_x = randint(0,10), randint(0,10)
-        else:
-            del snake_tail[0]
-        view.addstr(apple_y, apple_x, '$')
-finally:
-    endwin()
+    next_turn()
 
-# сделать выход за границы ошибка в 26 строке и добавить обработку 0-0 (слева и сверху) - done
-# сделать ui в tkinter - in progress
+
+def next_turn():
+    global snake_x, snake_y, snake_tail, apple_x, apple_y, score
+
+    canvas.delete("all")
+
+    # создаем яблоко
+    canvas.create_rectangle(apple_x, apple_y, apple_x + SPACE_SIZE, apple_y + SPACE_SIZE, fill="red")
+
+    # на основе direction делаем шаг
+    if direction == "up":
+        snake_y -= SPACE_SIZE
+    elif direction == "down":
+        snake_y += SPACE_SIZE
+    elif direction == "left":
+        snake_x -= SPACE_SIZE
+    elif direction == "right":
+        snake_x += SPACE_SIZE
+
+    if snake_y >= WINDOW_Y or snake_x >= WINDOW_X:
+        print("Game Over!")
+        exit()
+    if snake_y <= -1 or snake_x <= -1:
+        print("Game Over!")
+        exit()
+    if (snake_x, snake_y) in snake_tail:
+        print("Game Over!")
+        exit()
+
+    snake_tail.append((snake_x, snake_y))
+    for x, y in snake_tail:
+        canvas.create_rectangle(x, y, x + SPACE_SIZE, y + SPACE_SIZE, fill="white")
+
+    if (apple_x, apple_y) == (snake_x, snake_y):
+        score += 1
+        label_score.config(text=f"Score: {score}")
+        while True:
+            apple_x = randint(0, (WINDOW_X - SPACE_SIZE) // SPACE_SIZE) * SPACE_SIZE
+            apple_y = randint(0, (WINDOW_Y - SPACE_SIZE) // SPACE_SIZE) * SPACE_SIZE
+            if (apple_x, apple_y) not in snake_tail:
+                break
+    else:
+        del snake_tail[0]
+    window.after(100, next_turn)
+
+
+window = Tk()     # создаем корневой объект - окно
+window.title("Snake")     # устанавливаем заголовок окна
+
+window.geometry("1200x800")    # устанавливаем размеры окнаs
+window.resizable(False, False)
+
+
+label = Label(text="Snake Game") # создаем текстовую метку
+
+score = 0
+label_score = Label(window, text=f"Score: {score}", font=("Arial", 40))
+label_score.pack()
+
+canvas = Canvas(window, height=WINDOW_Y, width=WINDOW_X, background=BACKGROUND_COLOR)
+canvas.pack()
+
+window.bind("<KeyPress>", change_direction)  # считываю с клавы направление
+start_game()
+
+window.mainloop()
