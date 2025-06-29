@@ -63,6 +63,7 @@ def next_turn():
         exit()
 
     snake_tail.append((snake_x, snake_y))
+    print(snake_tail)
     for x, y in snake_tail:
         canvas.create_rectangle(x, y, x + SPACE_SIZE, y + SPACE_SIZE, fill="white")
 
