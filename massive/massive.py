@@ -6,18 +6,21 @@ class Massive():
         self.cap = 10
         self.massive = (ctypes.c_int * self.cap)()
 
+    def resizing(self):
+        self.cap *= 2
+        new_massive = (ctypes.c_int * self.cap)()
+        for i in range(self.lenght):
+            new_massive[i] = self.massive[i]
+
+        self.massive = new_massive
+
     def append(self, x):
         if self.lenght < self.cap:
             self.massive[self.lenght] = x
             self.lenght += 1
         if self.lenght == self.cap:
-            self.cap *= 2
-            new_massive = (ctypes.c_int * self.cap)()
-            for i in range(self.lenght):
-                new_massive[i] = self.massive[i]
-            new_massive[self.lenght] = x
+            self.resizing()
 
-            self.massive = new_massive
 
     def insert(self, index, x):
             if index >= self.lenght:
@@ -25,11 +28,7 @@ class Massive():
                 return
 
             if self.lenght == self.cap:
-                self.cap *= 2
-                new_massive = (ctypes.c_int * self.cap)()
-                for i in range(self.lenght):
-                    new_massive[i] = self.massive[i]
-                self.massive = new_massive
+                self.resizing()
 
             for i in range(self.lenght, index, -1):
                 self.massive[i] = self.massive[i - 1]
