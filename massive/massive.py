@@ -80,14 +80,60 @@ class Massive():
             new_mass += self
         return new_mass
 
+    def __contains__(self, item):
+        for i in self:
+            if item == i:
+                return True
+            else:
+                return False
+
+    def __delitem__(self, index):
+        new_mass = (ctypes.c_int * self.cap)()
+
+        if index > self.lenght-1:
+            print('Out of range')
+            return
+
+        for i in range(self.lenght):
+            if i == index:
+                continue
+            if i < index:
+                new_mass[i] = self.massive[i]
+            else:
+                new_mass[i-1] = self.massive[i]
+
+        self.lenght -= 1
+
+        self.massive = new_mass
+
+    def __le__(self, other):
+        return self.lenght <= len(other)
+
+    def __reversed__(self):
+        for i in range(self.lenght-1, -1, -1):
+            yield self.massive[i]
+
+    def __rmul__(self, other):
+        return self * other
+
+
+
+m = Massive()
+
+m.append(1)
+m.append(2)
+m.append(3)
+
+
+print(m * 3)
 
 # ДЗ: реализовать все оставшиеся методы массива:
 # __add__ - done
 # __class__ - skip
 # __class_getitem__ - skip
-# __contains__ - ?
-# __delattr__
-# __delitem__
+# __contains__ - done
+# __delattr__ - skip
+# __delitem__ - done
 # __dir__
 # __doc__
 # __eq__
@@ -97,26 +143,26 @@ class Massive():
 # __getitem__ - done
 # __getstate__
 # __gt__
-# __hash__
+# __hash__ - skip
 # __iadd__ - done
 # __imul__ - done
 # __init__ - done
 # __init_subclass__ - skip
 # __iter__ - done
-# __le__
+# __le__ - done
 # __len__ - done
 # __lt__
 # __mul__ - done
 # __ne__
 # __new__
-# __reduce__
-# __reduce_ex__
-# __repr__
-# __reversed__
+# __reduce__ - skip
+# __reduce_ex__ - skip
+# __repr__ - we have str so skip
+# __reversed__ - done
 # __rmul__
 # __setattr__
 # __setitem__
-# __sizeof__
+# __sizeof__ - skip
 # __str__ - done
 # __subclasshook__
 # append
