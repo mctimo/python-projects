@@ -1,5 +1,6 @@
 from random import randint
 from tkinter import *
+from snake_class import Queue
 
 # CONST
 WINDOW_X = 500
@@ -9,6 +10,9 @@ SPACE_SIZE = 25
 
 # main logic
 direction = "right" # дефолтное направление змейки
+
+snake_tail_x = Queue(cap=1000)
+snake_tail_y = Queue(cap=1000)
 
 
 def change_direction(event):
@@ -30,7 +34,6 @@ def start_game():
     snake_x, snake_y = 0, 0
     apple_x = randint(0, (WINDOW_X - SPACE_SIZE) // SPACE_SIZE) * SPACE_SIZE
     apple_y = randint(0, (WINDOW_Y - SPACE_SIZE) // SPACE_SIZE) * SPACE_SIZE
-    snake_tail = []
     next_turn()
 
 
@@ -58,13 +61,14 @@ def next_turn():
     if snake_y <= -1 or snake_x <= -1:
         print("Game Over!")
         exit()
-    if (snake_x, snake_y) in snake_tail:
+    if (snake_x, snake_y) in zip(snake_tail_x, snake_tail_y):
         print("Game Over!")
         exit()
 
-    snake_tail.append((snake_x, snake_y))
-    print(snake_tail)
-    for x, y in snake_tail:
+    snake_tail_x.append(snake_x)
+    snake_tail_y.append(snake_y)
+
+    for x, y in zip(snake_tail_x, snake_tail_y):
         canvas.create_rectangle(x, y, x + SPACE_SIZE, y + SPACE_SIZE, fill="white")
 
     if (apple_x, apple_y) == (snake_x, snake_y):
@@ -73,10 +77,11 @@ def next_turn():
         while True:
             apple_x = randint(0, (WINDOW_X - SPACE_SIZE) // SPACE_SIZE) * SPACE_SIZE
             apple_y = randint(0, (WINDOW_Y - SPACE_SIZE) // SPACE_SIZE) * SPACE_SIZE
-            if (apple_x, apple_y) not in snake_tail:
+            if (apple_x, apple_y) not in zip(snake_tail_x, snake_tail_y):
                 break
     else:
-        del snake_tail[0]
+        snake_tail_x.delete_first()
+        snake_tail_y.delete_first()
     window.after(100, next_turn)
 
 
