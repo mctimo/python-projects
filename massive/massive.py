@@ -2,52 +2,52 @@ import ctypes
 
 class Massive():
     def __init__(self):
-        self.lenght = 0
+        self.length = 0
         self.cap = 10
         self.massive = (ctypes.c_int * self.cap)()
 
     def resizing(self):
         self.cap *= 2
         new_massive = (ctypes.c_int * self.cap)()
-        for i in range(self.lenght):
+        for i in range(self.length):
             new_massive[i] = self.massive[i]
 
         self.massive = new_massive
 
     def append(self, x):
-        if self.lenght < self.cap:
-            self.massive[self.lenght] = x
-            self.lenght += 1
-        if self.lenght == self.cap:
+        if self.length < self.cap:
+            self.massive[self.length] = x
+            self.length += 1
+        if self.length == self.cap:
             self.resizing()
 
     def insert(self, index, x):
-            if index >= self.lenght:
+            if index >= self.length:
                 self.append(x)
                 return
 
-            if self.lenght == self.cap:
+            if self.length == self.cap:
                 self.resizing()
 
-            for i in range(self.lenght, index, -1):
+            for i in range(self.length, index, -1):
                 self.massive[i] = self.massive[i - 1]
 
             self.massive[index] = x
-            self.lenght += 1
+            self.length += 1
 
     def __iter__(self):
-        for i in range(self.lenght):
+        for i in range(self.length):
             yield self.massive[i]
 
     def __getitem__(self, index):
         return self.massive[index]
 
     def __len__(self):
-        return  self.lenght
+        return  self.length
 
     def __str__(self):
         string = '['
-        for i in range(self.lenght):
+        for i in range(self.length):
             if i == 0:
                 string += f'{str(self[i])}'
             else:
@@ -84,17 +84,16 @@ class Massive():
         for i in self:
             if item == i:
                 return True
-            else:
-                return False
+        return False
 
     def __delitem__(self, index):
         new_mass = (ctypes.c_int * self.cap)()
 
-        if index > self.lenght-1:
+        if index > self.length-1:
             print('Out of range')
             return
 
-        for i in range(self.lenght):
+        for i in range(self.length):
             if i == index:
                 continue
             if i < index:
@@ -102,20 +101,19 @@ class Massive():
             else:
                 new_mass[i-1] = self.massive[i]
 
-        self.lenght -= 1
+        self.length -= 1
 
         self.massive = new_mass
 
     def __le__(self, other):
-        return self.lenght <= len(other)
+        return self.length <= len(other)
 
     def __reversed__(self):
-        for i in range(self.lenght-1, -1, -1):
+        for i in range(self.length - 1, -1, -1):
             yield self.massive[i]
 
     def __rmul__(self, other):
         return self * other
-
 
 
 m = Massive()
